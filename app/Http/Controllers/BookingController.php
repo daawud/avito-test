@@ -2,30 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookingCreateRequest;
+use App\Http\Responses\ApiResponse;
+use App\Services\BookingListHandler;
+use Exception;
+
+/**
+ * Class BookingController
+ * @package App\Http\Controllers
+ */
 class BookingController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * @param int $id
+     * @param ApiResponse $response
+     * @return mixed
      */
-    public function __construct()
+    public function list(int $id, ApiResponse $response)
     {
-        //
+        return $response->success(BookingListHandler::getBookingsList($id));
     }
 
-    public function list()
+    /**
+     * @param BookingCreateRequest $request
+     * @param ApiResponse $response
+     * @return mixed
+     */
+    public function create(BookingCreateRequest $request, ApiResponse $response)
     {
-        return 345;
+        return $response->success(BookingListHandler::addBooking($request->all()));
     }
 
-    public function create()
+    /**
+     * @param int $id
+     * @param ApiResponse $response
+     * @return mixed
+     * @throws Exception
+     */
+    public function delete(int $id, ApiResponse $response)
     {
-        return 345;
-    }
-
-    public function delete()
-    {
-        return 345;
+        return $response->success(BookingListHandler::removeRoom($id));
     }
 }

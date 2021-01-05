@@ -34,12 +34,12 @@ class RoomController extends Controller
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @param ApiResponse $response
      * @return mixed
      * @throws Exception
      */
-    public function delete($id, ApiResponse $response)
+    public function delete(int $id, ApiResponse $response)
     {
         return $response->success(RoomCatalogHandler::removeRoom($id));
     }

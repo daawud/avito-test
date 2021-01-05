@@ -2,24 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Room
+ * @package App\Models
+ */
 class Room extends Model
 {
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'description', 'price',
     ];
-
     /**
-     * Определяет необходимость отметок времени для модели.
-     *
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * @return HasMany
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

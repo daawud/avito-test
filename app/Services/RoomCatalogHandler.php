@@ -23,7 +23,7 @@ class RoomCatalogHandler
     {
         $addedOn = DB::raw("date_format(from_unixtime(added_on),'%Y-%m-%d') as added_on");
         return Room::query()
-                   ->select(['id', 'description', 'price', $addedOn])
+                   ->select(['id as room_id', 'description', 'price', $addedOn])
                    ->when($sort, function($query) use ($sort) {
                        $sortData = QueryBuildHelper::parseRequestedSorts($sort);
                        $query->orderBy($sortData[0], $sortData[1]);
@@ -42,7 +42,7 @@ class RoomCatalogHandler
         $room->added_on = Carbon::now()->timestamp;
         $room->save();
 
-        return ['id' => $room->id];
+        return ['room_id' => $room->id];
     }
 
     /**

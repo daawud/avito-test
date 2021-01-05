@@ -24,7 +24,9 @@ class BookingCreateRequest extends RequestAbstract
     public function rules(): array
     {
         return [
-            //
+            'room_id' => 'required|integer|exists:rooms,id',
+            'date_start' => 'required|date_format:Y-m-d|after_or_equal:tomorrow',
+            'date_end' => 'required|date_format:Y-m-d|after_or_equal:date_start',
         ];
     }
 
