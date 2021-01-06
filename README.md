@@ -1,24 +1,173 @@
-# Lumen PHP Framework
+# Cервис для управления номерами отелей и бронированиями.
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
+Реализовано на Lumen PHP Framework.
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+## Запуск проекта
 
-## Official Documentation
+- Скачиваем проект из репозитория
+  
+  `git clone https://github.com/daawud/avito-test.git`
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+- Устанавливаем необходимые пакеты
 
-## Contributing
+    `composer install`
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Переходим в папку docker, копируем конфигурационный файл
 
-## Security Vulnerabilities
+  `cd docker/`
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+  `cp .env.example .env`
 
-## License
+- Собираем проект
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+  `./dctl.sh build` 
+
+- Запускаем проект
+
+    `./up.sh`
+
+- Создаем символическую ссылку на конфигурационный файл
+
+    `ln -s .env ../.env`
+
+
+## Методы API
+
+### Добавление номера отеля
+
+- Запрос: `POST http://localhost/api/rooms`
+
+- Параметры запроса:
+  
+  {
+  
+      "description": "Номер-люкс",
+      "price": 4750
+  }
+  
+- Ответ:
+  
+  {
+  
+      "room_id": 1
+  }
+
+### Получение списка номеров отеля
+
+- Запрос: `GET http://localhost/api/rooms`
+
+- Параметры запроса:
+
+    сортировка по возрастанию цены `?sort=price`
+  
+    сортировка по убыванию цены `?sort=-price`
+  
+    сортировка по дате добавления (возрастанию) `?sort=added_on`
+  
+    сортировка по дате добавления (убыванию) `?sort=-added_on`
+
+- Ответ:
+  
+  {
+  
+      "data": 
+      [
+          {
+              "room_id": 1,
+              "description": "Номер-люкс",
+              "price": 4750,
+              "added_on": "2021-01-05"
+          },
+          {
+              "room_id": 4,
+              "description": "Премиум",
+              "price": 5300,
+              "added_on": "2021-01-05"
+          },
+          {
+              "room_id": 3,
+              "description": "Президентский люкс",
+              "price": 8100,
+              "added_on": "2021-01-05"
+          }
+      ]
+  }
+
+### Удаление номера отеля и всех его броней
+
+- Запрос: `DELETE http://localhost/api/rooms/{id}`
+
+- Параметры запроса:
+
+      {id}: идентификатор удаляемого номера
+
+- Ответ:
+
+  {
+
+      "data": true
+  }
+
+### Добавление брони
+
+- Запрос: `POST http://localhost/api/bookings`
+
+- Параметры запроса:
+
+  {
+
+      "room_id": 3,
+      "date_start": "2021-01-07",
+      "date_end": "2021-01-07"
+  }
+
+    Забронировать номер можно только начиная со следующего дня относительно даты создания брони. Бронировать можно одним днем (т.е. date_start = date_end валидно)
+
+- Ответ:
+
+  {
+
+      "booking_id": 1
+  }
+
+### Получение списка броней номеров отеля
+
+- Запрос: `GET http://localhost/api/rooms/{id}/bookings`
+
+- Параметры запроса:
+
+      {id}: идентификатор номера, для которого получается список броней
+
+- Ответ:
+
+  {
+
+      "data": 
+      [
+        {
+            "booking_id": 1,
+            "date_start": "2021-01-06",
+            "date_end": "2021-01-07"
+        },
+        {
+            "booking_id": 3,
+            "date_start": "2021-01-07",
+            "date_end": "2021-01-07"
+        }
+      ]
+  }
+
+### Удаление брони
+
+- Запрос: `DELETE http://localhost/api/bookings/{id}`
+
+- Параметры запроса:
+
+      {id}: идентификатор удаляемой брони
+
+- Ответ:
+
+  {
+
+      "data": true
+  }
